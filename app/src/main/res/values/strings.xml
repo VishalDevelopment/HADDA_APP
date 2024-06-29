@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">HADDA APP</string>
+    <string name="title">Vishal General Store: Where Wheat Becomes Organic Favor Magic!</string>
+    <string name="Description_Shop">At Vishal General Store, located in Aman Nagar Colony, Qadipur Delhi - 110036, we are all about turning your wheat into delightful, organic favors! We are experts in the art of grinding and transforming wheat using traditional methods and the finest quality ingredients.</string>
+    <string name="heading_points">Our Passion for Organic Delights:</string>
+    <string name="Imp_Points">
+• Organic Commitment: We prioritize organic ingredients and sustainable practices, ensuring the purity and goodness of every favor.\n
+• Unwavering Quality: Our expertise in grinding and meticulous selection of wheat guarantee the best possible results.\n
+• Generations of Experience: Time-honored techniques passed down through generations create authentic flavors and textures.\n</string>
+
+    <string name="Quote1">Transform Your Wheat into Organic Favors with Confidence!</string>
+    <string name="heading_price">We understand the importance of cost-effective solutions. Here is our transparent pricing structure for grinding your wheat into organic favors:
+</string>
+    <string name="Pricing">
+
+• Up to 5kg wheat: ₹30 (fixed processing fee)\n
+• 11kg to 50kg wheat: ₹3.5 per kg grinding cost\n
+• Over 50kg wheat: ₹3 per kg grinding cost\n
+    </string>
+
+    <string name="Quote2">Embrace the Organic Advantage at Vishal General Store!</string>
+    <string name="Welcome_Line">Visit us today and discover the magic of transforming your wheat into delicious and wholesome organic favors. Let us handle the grinding process while you focus on creating memorable moments.</string>
+
+</resources>
