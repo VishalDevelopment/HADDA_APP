@@ -1,6 +1,7 @@
 package com.example.haddaapp.Screens
 
 import android.util.Log
+import androidx.appcompat.view.menu.MenuView.ItemView
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -20,8 +21,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,7 +37,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.haddaapp.Models.Products
+import com.example.haddaapp.Models.OrderProduct
+import com.example.haddaapp.Models.ProductResponse
 import com.example.haddaapp.R
 import com.example.haddaapp.Viewmodel.HaddaViewModel
 
@@ -42,23 +46,28 @@ import com.example.haddaapp.Viewmodel.HaddaViewModel
 fun HomeScreen(viewmodel: HaddaViewModel) {
 
 
-    val items = mutableListOf<Products>()
-    items.add(Products(1, "5Kg-10Kg", 0))
-    items.add(Products(2, "11Kg-50Kg", 0))
-    items.add(Products(3, "50Kg-More", 0))
-    Box(modifier = Modifier.fillMaxSize()) {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2)
-        ) {
-            items(items) {
-                ItemView(it, viewmodel)
+    val Products = viewmodel.ProductList.collectAsState(initial = emptyList())
+
+    if (Products.value!= mutableListOf(emptyList<ProductResponse>())){
+        Box(modifier = Modifier.fillMaxSize()) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2)
+            ) {
+                items(Products.value){
+                    ItemView(it,viewmodel)
+                }
             }
+        }
+    }
+    else{
+        Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+            CircularProgressIndicator()
         }
     }
 }
 
 @Composable
-fun ItemView(products: Products, viewmodel: HaddaViewModel) {
+fun ItemView(products: ProductResponse, viewmodel: HaddaViewModel) {
     val Unit = remember {
         mutableStateOf(products.Unit)
     }
@@ -124,7 +133,7 @@ fun ItemView(products: Products, viewmodel: HaddaViewModel) {
             Button(
                 onClick = {
                     if (Unit.value > 0) {
-                        viewmodel.productList.value.add(Products(products.id,products.category,Unit.value))
+                        viewmodel.OrderProductList.value.add(ProductResponse(products.id,products.category,products.Unit,products.price,products.status))
                         Log.d("VishalOrder","Added to Cart")
                     }
                 },

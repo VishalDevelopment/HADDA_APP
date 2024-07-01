@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
@@ -23,14 +24,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.haddaapp.Navigation.Navigate
+import com.example.haddaapp.Viewmodel.HaddaViewModel
 
 @Composable
 //@Preview(showBackground = true)
-fun LoginScreen(navcontroller: NavHostController) {
+fun LoginScreen(navcontroller: NavHostController, viewModel: HaddaViewModel) {
     val Email = remember {
         mutableStateOf("")
     }
@@ -44,19 +45,20 @@ fun LoginScreen(navcontroller: NavHostController) {
         ) {
             OutlinedTextField(value = Email.value, onValueChange = {
                 Email.value = it
-            }, modifier = Modifier.padding(vertical = 10.dp).fillMaxWidth(.8f), placeholder = { Text(text = "Email")}, leadingIcon = { Icon(
+            }, modifier = Modifier.padding(vertical = 10.dp).fillMaxWidth(.8f).height(55.dp), placeholder = { Text(text = "Email")}, leadingIcon = { Icon(
                 imageVector = Icons.Default.Email,
                 contentDescription = null
-            )})
+            )}, singleLine = true)
             OutlinedTextField(value = Password.value, onValueChange = {
                 Password.value = it
-            }, modifier = Modifier.padding(vertical = 10.dp).fillMaxWidth(.8f),placeholder = { Text(text = "Password")}, leadingIcon = { Icon(
+            }, modifier = Modifier.padding(vertical = 10.dp).fillMaxWidth(.8f).height(55.dp),placeholder = { Text(text = "Password")}, leadingIcon = { Icon(
                 imageVector = Icons.Default.Lock,
                 contentDescription = null
-            )})
+            )}, singleLine = true)
 
             Button(onClick = {
                 //Sign-In Logic
+                viewModel.Login(Email.value.lowercase(),Password.value)
 
             }, colors = ButtonDefaults.buttonColors(Color.Yellow), border = BorderStroke(1.dp,Color.Black), modifier = Modifier.padding(vertical = 5.dp)) {
                 Text(text = "Sign In", color = Color.Black)
