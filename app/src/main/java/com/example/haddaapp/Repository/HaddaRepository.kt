@@ -23,6 +23,7 @@ class HaddaRepository(val datastore: DataStore<Preferences>, private  val contex
     suspend fun MyAllOrder(id: String) {
         val response = ApiProvider.getInstance().MyOrder(id)
         if (response.isSuccessful && response.body() != null) {
+            Log.d("OrderVis","${response.body()!!}")
             MutableOrderList.emit(response.body()!!)
         }
     }

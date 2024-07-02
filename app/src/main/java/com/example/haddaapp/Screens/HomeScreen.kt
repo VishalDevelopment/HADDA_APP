@@ -133,8 +133,8 @@ fun ItemView(products: ProductResponse, viewmodel: HaddaViewModel) {
             Button(
                 onClick = {
                     if (Unit.value > 0) {
-                        viewmodel.OrderProductList.value.add(ProductResponse(products.id,products.category,products.Unit,products.price,products.status))
-                        Log.d("VishalOrder","Added to Cart")
+//                        viewmodel.OrderProductList.value.add(ProductResponse(products.id,products.category,Unit.value,products.price,products.status))
+                        viewmodel.OrderProductList.value.add(ProductResponse(Unit.value,products.category,products.id,products.price,products.status))
                     }
                 },
                 modifier = Modifier

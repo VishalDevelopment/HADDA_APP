@@ -2,7 +2,6 @@ package com.example.haddaapp
 
 import android.app.Activity
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -12,36 +11,43 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.haddaapp.Navigation.BottomNavigation
 import com.example.haddaapp.Navigation.Nav
-import com.example.haddaapp.Screens.ProfileScreen
+import com.example.haddaapp.Navigation.Navigate
 import com.example.haddaapp.Viewmodel.HaddaViewModel
 import com.example.haddaapp.ui.theme.HADDAAPPTheme
 import com.example.haddaapp.ui.theme.StatusYellow
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
+
+    var startdestination = mutableStateOf(NavStart.LoginScreen.route)
 class MainActivity : ComponentActivity() {
+
+    val viewModel:HaddaViewModel by viewModels<HaddaViewModel>(factoryProducer = { object :ViewModelProvider.Factory{ override fun <T : ViewModel> create(modelClass: Class<T>): T { return HaddaViewModel(applicationContext) as T } } })
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
+        installSplashScreen().apply {
+            setKeepOnScreenCondition{
+                viewModel.splash
+
+            }
+        }
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             HADDAAPPTheme {
-                val viewModel:HaddaViewModel by viewModels<HaddaViewModel>(factoryProducer = { object :ViewModelProvider.Factory{ override fun <T : ViewModel> create(modelClass: Class<T>): T { return HaddaViewModel(applicationContext) as T } } })
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Box(Modifier.padding(innerPadding)){
-
                         StartApp(viewModel)
                     }
                 }
@@ -52,21 +58,27 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun StartApp(viewModel: HaddaViewModel){
-    val id = viewModel.getId().collectAsState(initial = "")
+
 
     val view = LocalView.current
     val window = (view.context as Activity).window
     window.statusBarColor = StatusYellow.toArgb()
-    Log.d("VisID",id.value.toString())
-    if (id.value==""&&id.value.isNullOrBlank()){
-        Nav(viewModel)
-    }
-    else{
-        BottomNavigation(viewModel)
-    }
 
+    val navController = rememberNavController()
+    NavHost(navController = navController, startDestination = startdestination.value ){
+        composable(NavStart.Homepage.route){
+            BottomNavigation(viewModel)
+        }
+        composable(NavStart.LoginScreen.route){
+            Nav(viewModel)
+        }
+    }
 }
 
+sealed class NavStart (val route:String){
+    object LoginScreen : NavStart("login")
+    object Homepage: NavStart("homepage")
+}
 
 
 

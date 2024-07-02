@@ -44,7 +44,7 @@ import com.example.haddaapp.Viewmodel.HaddaViewModel
 
 @Composable
 fun CartScreen(viewmodel: HaddaViewModel) {
-    val productList = viewmodel.OrderProductList
+    var productList = viewmodel.OrderProductList
     Log.d("VishalproductList", "${productList.value}")
     val checkProducts = remember {
         if (productList.value.isEmpty()) {
@@ -83,10 +83,13 @@ fun CartScreen(viewmodel: HaddaViewModel) {
 
                 Button(onClick = {
                     productList.value.map {
+                        if(it.id == 1){
+                            it.price =it.Unit.toDouble()* it.price
+                        }
                         viewmodel.placeOrder(info.value.userID,info.value.name,info.value.email,info.value.phone_no,it.category,it.Unit,it.price,info.value.address
                         )
                     }
-                }, colors = ButtonDefaults.buttonColors(Color.Yellow), border = BorderStroke(1.dp,Color.Black), modifier = 
+                }, colors = ButtonDefaults.buttonColors(Color.Yellow), border = BorderStroke(1.dp,Color.Black), modifier =
                     Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 20.dp)) {

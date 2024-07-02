@@ -1,7 +1,10 @@
 package com.example.haddaapp.Viewmodel
 
 import android.content.Context
+import android.util.Log
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.emptyPreferences
@@ -10,9 +13,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.haddaapp.Models.ProductResponse
 import com.example.haddaapp.Models.UserProfile
+import com.example.haddaapp.NavStart
+import com.example.haddaapp.Navigation.BottomNav
+import com.example.haddaapp.Navigation.BottomNavigation
+import com.example.haddaapp.Navigation.Navigate
+
 import com.example.haddaapp.Repository.HaddaRepository
+import com.example.haddaapp.startdestination
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class HaddaViewModel(val context: Context) : ViewModel() {
@@ -21,6 +33,26 @@ class HaddaViewModel(val context: Context) : ViewModel() {
             produceNewData = { emptyPreferences() }),
             produceFile = { context.preferencesDataStoreFile("userPref") })
     val repository = HaddaRepository(datastore,context)
+
+    var splash by mutableStateOf(true)
+
+    init {
+        repository.getId().onEach {
+            if (it==""){
+                Log.d("if - VISID","$it")
+                startdestination.value = NavStart.LoginScreen.route
+
+            }
+            else{
+                Log.d("else - VISID","$it")
+                startdestination.value = NavStart.Homepage.route
+            }
+            delay(500)
+            splash = false
+        }.launchIn(viewModelScope)
+    }
+
+
     fun getId(): Flow<String> {
         return repository.getId()
     }
@@ -39,6 +71,7 @@ class HaddaViewModel(val context: Context) : ViewModel() {
     fun getAllOrder(id:String){
         viewModelScope.launch {
             repository.MyAllOrder(id)
+            Log.d("VmOrder","${MyOrderList.value}")
         }
     }
     // Place Order Screen

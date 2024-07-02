@@ -37,16 +37,20 @@ fun OrderScreen(viewmodel: HaddaViewModel) {
     val id = viewmodel.getId().collectAsState(initial = "")
     viewmodel.getAllOrder(id.value)
     val itemsList = viewmodel.MyOrderList.collectAsState()
-    Log.d("MyOrders","${itemsList.value}")
+    Log.d("MyOrders", "${itemsList.value}")
 
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
-        modifier= Modifier
-            .padding(top = 30.dp)
-            .align(Alignment.TopCenter)
+            modifier = Modifier
+                .padding(top = 30.dp)
+                .align(Alignment.TopCenter)
         ) {
-            items(itemsList.value){
-                Card(elevation = CardDefaults.elevatedCardElevation(2.dp), border = BorderStroke(0.5.dp,Color.Black), modifier = Modifier.padding(5.dp)){
+            items(itemsList.value) {
+                Card(
+                    elevation = CardDefaults.elevatedCardElevation(2.dp),
+                    border = BorderStroke(0.5.dp, Color.Black),
+                    modifier = Modifier.padding(5.dp)
+                ) {
                     OrderListView(it)
                 }
                 Spacer(modifier = Modifier.padding(vertical = 5.dp))
@@ -77,22 +81,23 @@ fun OrderListView(orderItems: MyOrderResponse) {
             Column(modifier = Modifier.padding(8.dp)) {
                 //Unit And Status is Missing
                 Text(text = "Category : ${orderItems.category}", fontSize = 18.sp)
-                Text(text = "Unit : ", fontSize = 18.sp)
-                Text(text = "Weight : ")
-                Text(text = "Price : ${orderItems.price}", fontSize = 18.sp)
-                Text(text = "Status : ", fontSize = 18.sp)
+                Text(text = "Unit : ${orderItems.unit}", fontSize = 18.sp)
+                Text(text = "Weight : ${orderItems.weight} kg", fontSize = 18.sp)
+                Text(text = "Price : ₹ ${orderItems.price}", fontSize = 18.sp)
+                Text(text = "Status : ${orderItems.status}", fontSize = 18.sp)
 
             }
         }
-        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 5.dp, vertical = 5.dp)) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 5.dp, vertical = 5.dp)
+        ) {
             Text(text = "Date : ${orderItems.orderDate}", fontSize = 15.sp)
             Text(text = "Time : ${orderItems.orderTiming}", fontSize = 15.sp)
         }
     }
 }
-
 
 
 @Composable
@@ -121,9 +126,11 @@ fun OrderListView() {
                 Text(text = "Status : ", fontSize = 18.sp)
             }
         }
-        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 5.dp, vertical = 5.dp)) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 5.dp, vertical = 5.dp)
+        ) {
             Text(text = "Date : ", fontSize = 15.sp)
             Text(text = "Time : ", fontSize = 15.sp)
         }
