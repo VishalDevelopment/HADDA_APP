@@ -273,7 +273,8 @@ fun BottomNavigation(viewmodel: HaddaViewModel) {
                                 }
                             } else {
                                 navController.navigate(BottomNav.Cart.name){
-                                    popUpTo(BottomNav.Home.name)
+                                    popUpTo(BottomNav.Home.name){
+                                    }
                                     launchSingleTop = true
                                     restoreState = true
                                 }
@@ -300,6 +301,7 @@ fun BottomNavigation(viewmodel: HaddaViewModel) {
                     composable(BottomNav.Cart.name) {
                         CartScreen(viewmodel)
                         selectedIconindex = 1
+
                     }
                     composable(DrawerNav.Profile.name) {
                         ProfileScreen(viewmodel)
