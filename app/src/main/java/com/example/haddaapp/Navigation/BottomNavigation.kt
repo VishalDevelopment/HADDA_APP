@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -29,25 +28,18 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -56,11 +48,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -77,27 +66,33 @@ import com.example.haddaapp.ui.theme.YellowJC
 import kotlinx.coroutines.launch
 
 
-data class BottomItem(
-    val title: String,
-    val selectedIcon: ImageVector,
-    val unselectedIcon: ImageVector,
+data class BottomBarOptions(
+    val name: String,
+    val SelectedIcon: ImageVector,
+    val UnselectedIcon: ImageVector,
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomNavigation(viewmodel: HaddaViewModel) {
 
-    val listItem = listOf(
-        BottomItem("Home", Icons.Default.Home, Icons.Outlined.Home),
-        BottomItem("Cart", Icons.Default.ShoppingCart, Icons.Outlined.ShoppingCart)
+    val controlList = mutableListOf(
+        BottomBarOptions(
+            "home",
+            Icons.Default.Home,
+            Icons.Outlined.Home
+        ),
+        BottomBarOptions(
+            "cart",
+            Icons.Default.ShoppingCart,
+            Icons.Outlined.ShoppingCart
+        )
     )
-    var selectedIconindex by rememberSaveable {
-        mutableStateOf(0)
-    }
-    val navController = rememberNavController()
-    var selectedIcon = remember {
+    val selectedIcon = remember {
         mutableStateOf(Icons.Default.Home)
     }
+
+    val navController = rememberNavController()
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val context = LocalContext.current
@@ -138,8 +133,11 @@ fun BottomNavigation(viewmodel: HaddaViewModel) {
                     icon = { Icon(imageVector = Icons.Default.Home, contentDescription = null) },
                     selected = false,
                     onClick = {
-                        Toast.makeText(context, "Home Clicked", Toast.LENGTH_SHORT).show()
-
+//                        Toast.makeText(context, "Home Clicked", Toast.LENGTH_SHORT).show()
+                        navController.navigate(BottomNav.Home.name) {
+                            popUpTo(0)
+                        }
+                        scope.launch { drawerState.close() }
                     }
                 )
                 NavigationDrawerItem(
@@ -169,7 +167,7 @@ fun BottomNavigation(viewmodel: HaddaViewModel) {
                     },
                     selected = false,
                     onClick = {
-                        Toast.makeText(context, "My Order Clicked", Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(context, "My Order Clicked", Toast.LENGTH_SHORT).show()
                         navController.navigate(DrawerNav.Order.name) {
                             popUpTo(BottomNav.Home.name)
                         }
@@ -182,7 +180,7 @@ fun BottomNavigation(viewmodel: HaddaViewModel) {
                     icon = { Icon(imageVector = Icons.Default.Call, contentDescription = null) },
                     selected = false,
                     onClick = {
-                        Toast.makeText(context, "Support Clicked", Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(context, "Support Clicked", Toast.LENGTH_SHORT).show()
                         navController.navigate(DrawerNav.Support.name) {
                             popUpTo(BottomNav.Home.name)
                         }
@@ -195,7 +193,7 @@ fun BottomNavigation(viewmodel: HaddaViewModel) {
                     icon = { Icon(imageVector = Icons.Default.Info, contentDescription = null) },
                     selected = false,
                     onClick = {
-                        Toast.makeText(context, "About Clicked", Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(context, "About Clicked", Toast.LENGTH_SHORT).show()
                         navController.navigate(DrawerNav.About.name) {
                             popUpTo(BottomNav.Home.name)
                         }
@@ -259,36 +257,35 @@ fun BottomNavigation(viewmodel: HaddaViewModel) {
                 )
             },
             bottomBar = {
-                NavigationBar(containerColor = YellowBM, modifier = Modifier.height(60.dp), windowInsets = WindowInsets(0.dp)) {
-                    listItem.forEachIndexed { index, item ->
-                        NavigationBarItem(selected = index == selectedIconindex, onClick = {
-                            selectedIconindex = index
-                            if (index == 0) {
-                                navController.navigate(BottomNav.Home.name){
-                                    popUpTo(0){
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            } else {
-                                navController.navigate(BottomNav.Cart.name){
-                                    popUpTo(BottomNav.Home.name){
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            }
-                        }, icon = {
-                            Icon(
-                                imageVector = if (index == selectedIconindex) {
-                                    item.selectedIcon
-                                } else {
-                                    item.unselectedIcon
-                                }, contentDescription = null
-                            )
-                        })
+                BottomAppBar(containerColor = YellowJC,modifier = Modifier.height(50.dp), windowInsets = WindowInsets(0.dp)) {
+                    IconButton(onClick = {
+                        selectedIcon.value = Icons.Default.Home
+                        navController.navigate(BottomNav.Home.name) {
+                            launchSingleTop = true
+                        }
+                    }, modifier = Modifier.weight(1f)) {
+                        Icon(imageVector =if (selectedIcon.value == controlList[0].SelectedIcon){
+                            controlList[0].SelectedIcon
+                        }
+                        else{
+                            controlList[0].UnselectedIcon
+                        }, contentDescription = null)
                     }
+
+                    IconButton(onClick = {
+                        selectedIcon.value = Icons.Default.ShoppingCart
+                        navController.navigate(BottomNav.Cart.name) {
+                            launchSingleTop = true
+                        }
+                    }, modifier = Modifier.weight(1f)) {
+                        Icon(imageVector =if (selectedIcon.value == controlList[1].SelectedIcon){
+                            controlList[1].SelectedIcon
+                        }
+                        else{
+                            controlList[1].UnselectedIcon
+                        }, contentDescription = null)
+                    }
+
                 }
             },
         ) { innerpadding ->
@@ -296,11 +293,9 @@ fun BottomNavigation(viewmodel: HaddaViewModel) {
                 NavHost(navController = navController, startDestination = BottomNav.Home.name) {
                     composable(BottomNav.Home.name) {
                         HomeScreen(viewmodel)
-                        selectedIconindex = 0
                     }
                     composable(BottomNav.Cart.name) {
-                        CartScreen(viewmodel)
-                        selectedIconindex = 1
+                        CartScreen(viewmodel,navController,selectedIcon)
 
                     }
                     composable(DrawerNav.Profile.name) {
@@ -331,5 +326,5 @@ sealed class DrawerNav(val name: String) {
     object Order : DrawerNav("order")
     object Support : DrawerNav("support")
     object About : DrawerNav("about")
-    object Logout : DrawerNav("logout")
+
 }
