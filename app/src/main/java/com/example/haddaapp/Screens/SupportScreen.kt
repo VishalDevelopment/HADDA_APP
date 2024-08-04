@@ -58,7 +58,7 @@ fun SupportScreen() {
                 Button(onClick = {
                     //Call Button Working
                     val intent = Intent(Intent.ACTION_DIAL)
-                    intent.data= Uri.parse("tel:8851688279")
+                    intent.data= Uri.parse("tel:4565845235")
                     context.startActivity(intent)
                 }, shape = RoundedCornerShape(10.dp), colors = ButtonDefaults.buttonColors(
                     Color.Yellow), border = BorderStroke(0.5.dp,Color.Black)

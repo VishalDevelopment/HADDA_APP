@@ -3,8 +3,10 @@ package com.example.haddaapp.Navigation
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Call
@@ -106,13 +109,9 @@ fun BottomNavigation(viewmodel: HaddaViewModel) {
                     .width(300.dp) // Set the desired width for the drawer
                     .fillMaxHeight(),
             ) {
-                Box(
-                    modifier = Modifier
+                    Column(modifier = Modifier
                         .background(YellowJC)
-                        .fillMaxWidth()
-                        .height(200.dp), contentAlignment = Alignment.Center
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        .fillMaxWidth().wrapContentHeight(),horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                         Image(
                             painter = painterResource(id = R.drawable.wheat_bag),
                             contentDescription = null,
@@ -125,7 +124,6 @@ fun BottomNavigation(viewmodel: HaddaViewModel) {
                             fontFamily = FontFamily.SansSerif,
                             modifier = Modifier.padding(vertical = 3.dp)
                         )
-                    }
                 }
                 HorizontalDivider()
                 NavigationDrawerItem(
@@ -232,8 +230,8 @@ fun BottomNavigation(viewmodel: HaddaViewModel) {
                             contentAlignment = Alignment.CenterStart
                         ) {
                             Text(
-                                text = "Home",
-                                textAlign = TextAlign.Center
+                                text = "Grind Hadda",
+                                textAlign = TextAlign.Center,modifier = Modifier.fillMaxSize()
                             )
                         }
                     },
@@ -243,9 +241,9 @@ fun BottomNavigation(viewmodel: HaddaViewModel) {
                     navigationIcon = {
                         Box(
                             modifier = Modifier.fillMaxHeight(),
-                            contentAlignment = Alignment.CenterStart
+                            contentAlignment = Alignment.TopCenter
                         ) {
-                            IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                            IconButton(onClick = { scope.launch { drawerState.open() } },modifier = Modifier.fillMaxHeight().padding(3.dp)) {
                                 Icon(
                                     imageVector = Icons.Default.Menu,
                                     contentDescription = "Menu Icon"

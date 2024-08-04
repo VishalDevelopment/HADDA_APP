@@ -19,12 +19,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -38,7 +41,6 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -78,7 +80,11 @@ fun CartScreen(viewmodel: HaddaViewModel, navController: NavHostController, sele
             ) {
                 LazyColumn(modifier = Modifier.padding(vertical = 15.dp)) {
                     items(productList.value) {
-                        ListView(it)
+                        ListView(it){ removedProduct ->
+                            // Handle product removal on close icon click
+                            productList.value.remove(removedProduct)
+                            checkProducts.value = productList.value.isNotEmpty() // Update empty state
+                        }
                         Spacer(modifier = Modifier.padding(vertical = 5.dp))
                     }
                 }
@@ -132,7 +138,7 @@ fun CartScreen(viewmodel: HaddaViewModel, navController: NavHostController, sele
 
 @Composable
 
-fun ListView(product: ProductResponse) {
+fun ListView(product: ProductResponse, onRemove: (Any) -> Unit) {
     Card(elevation = CardDefaults.elevatedCardElevation(2.dp), border = BorderStroke(1.dp,Color.Black), modifier = Modifier.padding(5.dp)){
         Box(
             contentAlignment = Alignment.Center, modifier = Modifier
@@ -155,6 +161,9 @@ fun ListView(product: ProductResponse) {
                         Text(text = "Category :  ${product.category}", fontSize = 20.sp)
                         Text(text = "Unit : ${product.Unit}", fontSize = 20.sp)
                     }
+                    IconButton(onClick = { onRemove(product) }) {
+                        Icon(Icons.Default.Close, contentDescription = "Remove from Cart")
+                    }
                 }
                 Row(
                     horizontalArrangement = Arrangement.SpaceAround,
@@ -170,10 +179,3 @@ fun ListView(product: ProductResponse) {
     }
 }
 
-
-//Testing View
-@Composable
-@Preview
-fun ListView() {
-
-}
